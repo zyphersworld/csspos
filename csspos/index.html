@@ -1,0 +1,208 @@
+<html>
+<head>
+<script></script>
+<script src="textFit.min.js"></script>
+<script src="interact-1.2.4.min.js"></script>
+<script src="shifty.min.js"></script>
+<script src="aloha.min.js" data-aloha-plugins="common/ui,common/format,common/highlighteditables,common/link"></script>
+    <script>
+		var zindex=0;
+    function doFit(target){
+        //textFit(document.getElementsByClassName('resize'), {});
+        textFit(target, {"multiLine":true});
+	}
+
+	var inter = interact('.resize-drag')
+	  .draggable({
+		inertia: true,
+		// keep the element within the area of it's parent
+		restrict: {
+		  restriction: "parent",//"parent",
+		  endOnly: true,
+		  elementRect: { top: 0, left: 0, bottom: 1, right: 1 }
+		},
+		onmove: window.dragMoveListener
+	  })
+	  .resizable({
+		edges: { left: true, right: true, bottom: true, top: true },
+		invert: 'reposition'//'none' //
+	  })
+	  .on('resizemove', function (event) {
+		var target = event.target,
+			x = (parseFloat(target.getAttribute('data-x')) || 0),
+			y = (parseFloat(target.getAttribute('data-y')) || 0);
+
+		// update the element's style
+		target.style.width  = event.rect.width + 'px';
+		target.style.height = event.rect.height + 'px';
+
+		// translate when resizing from top or left edges
+		x += event.deltaRect.left;
+		y += event.deltaRect.top;
+
+		target.style.webkitTransform = target.style.transform =
+			'translate(' + x + 'px,' + y + 'px)';
+
+		target.setAttribute('data-x', x);
+		target.setAttribute('data-y', y);
+		
+		//target.textContent = event.rect.width + '×' + event.rect.height;
+		//onsole.log(x + " : " + y );
+		//setTimeOut(function(){doFit(target);},500);
+		doFit(target);
+	  }).on('doubletap',function(event) {
+			//console.log("double tapped on: " + event.target.id);
+			//inter.unset();
+			//aloha(document.querySelector('#'+event.target.id));	
+			var target = event.target
+			document.getElementById(target.id).style["z-index"]=zindex++;
+		});
+	  //~ .on('mouseup',function(event){
+	  //~ var target = event.target;
+	  //~ doFit(target);
+		//~ });
+
+	   function dragMoveListener (event) {
+		var target = event.target,
+			// keep the dragged position in the data-x/data-y attributes
+			x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx,
+			y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+		// translate the element
+		target.style.webkitTransform =
+		target.style.transform =
+		  'translate(' + x + 'px, ' + y + 'px)';
+
+		// update the posiion attributes
+		target.setAttribute('data-x', x);
+		target.setAttribute('data-y', y);
+	  }
+</script>
+
+<style>
+
+
+header{
+	text-align:center;
+	width:600px;
+	background:#eee;
+	margin:0px auto;
+	font-family:sans-serif;
+}
+
+header h1{
+	margin-bottom:-15px;
+}
+
+.resize{
+	position:absolute;
+}
+
+.resize-drag {
+  background-color: #29e;
+  color: white;
+  /*font-size: 20px;*/
+  font-family: sans-serif;
+  border-radius: 8px;
+	
+  padding: 12px;
+  /*margin: 30px 20px;*/
+
+  width: 120px;
+  min-height:1px;
+	overflow:hidden;
+  /* This makes things *much* easier */
+ /*box-sizing: border-box;*/
+ z-index:0;
+ 
+}
+
+#stage{
+	width:800px;height:400px;
+	background:#eee;
+	margin:0px auto;
+	position:relative;
+}
+
+#test_1{
+	text-align:center;
+	width:150px;
+	height:30px;
+	background:#ee8822;
+	text-shadow: 2px 2px 2px black;
+	font-weight:bold;
+}
+
+#test_0{
+top:40px;
+width:350px;
+
+}
+
+#test_2{
+	background: url("fire.jpg");
+	background-repeat:no-repeat;
+	background-size: cover;/*contain;*/
+	top:50%;
+	width:90%;
+	height:50px;
+}
+</style>
+
+</head>
+<body>
+<header>
+<h1>Content Layout Test</h1>
+<p><strong>Using: </strong> fitText.js, interact.js, shifty.js, <S>aloha.js</S></p>
+</header>
+
+<div id="stage">
+
+	<div id="test_0" class="resize resize-drag editable">Ethan greene was the best on ground today</div>
+	<div id="test_1" class="resize resize-drag editable">ETHAN GREENE</div>
+	<div id="test_2" class="resize resize-drag editable">&nbsp;</div>
+<!--
+	<div id="_1" class="resize">This is another test</div>
+	<div id="_2" class="resize">This is a final test</div>
+-->
+
+</div>
+
+
+<!--
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
+-->
+<!--
+<script src="jquery.fittext.js"></script>
+-->
+
+<script>
+
+	function editText(el){
+			
+	}
+
+
+      doFit(document.getElementsByClassName("resize resize-drag"));
+      
+      
+var output = document.querySelector('#test_0');
+var tweenable = new Tweenable();
+tweenable.tween({
+  from: { opacity: 0, x:50 },
+  to:   { opacity: 1, x:0 },
+  duration: 1000,
+  easing: 'bounce',
+  step: function (state) {
+    output.style.opacity = state.opacity;
+    output.style.left = state.x;
+    
+    //console.log(state);
+  }
+});
+    </script>
+
+
+</body>
+</html>
